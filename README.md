@@ -56,6 +56,7 @@ sudo dpkg -i gitlab-runner_amd64.deb
 
 ```shell
 sudo apt-get install -y python3-virtualenv python3-dev python3-pip virtualenvwrapper
+echo "export PYTHONDONTWRITEBYTECODE=1" > ~/.bashrc; source ~/.bashrc
 
 mkdir blog
 cd blog
@@ -144,3 +145,9 @@ job-with-before-after-script:
 `vim .bash_logout` (tout commenter)
 
 `sudo gitlab-runner run`
+
+## Github
+
+> ocr_projet_04_blog > Settings GitHub Pages > 
+
+pip install pelican markdown ghp-import
