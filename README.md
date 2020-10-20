@@ -8,10 +8,6 @@
 sudo mkdir -p /data/gitlab/{config,data,logs}
 
 sudo docker run --detach --hostname localhost --publish 4433:443 --publish 8080:80 --publish 2022:22 --name gitlab --restart always --volume /data/gitlab/config:/etc/gitlab --volume /data/gitlab/logs:/var/log/gitlab --volume /data/gitlab/data:/var/opt/gitlab gitlab/gitlab-ce:latest
-
-mkdir -p /data/gitlab/runner
-
-docker run -d --name gitlab-runner --restart always -v /var/run/docker.sock:/var/run/docker.sock -v /data/gitlab-runner:/etc/gitlab-runner gitlab/gitlab-runner:latest
 ```
 
 ### Nginx
@@ -56,7 +52,7 @@ sudo dpkg -i gitlab-runner_amd64.deb
 
 ```shell
 sudo apt-get install -y python3-virtualenv python3-dev python3-pip virtualenvwrapper
-echo "export PYTHONDONTWRITEBYTECODE=1" > ~/.bashrc; source ~/.bashrc
+echo "export PYTHONDONTWRITEBYTECODE=1" >> ~/.bashrc; source ~/.bashrc
 
 mkdir blog
 cd blog
@@ -72,6 +68,7 @@ Utiliser des URLS relative pour Github
 
 ```shell
 pelican-quickstart
+vim pelicanconf.py  # Ajouter OUTPUT_PATH = '/home/vagrant/ocr_projet_04_blog' | Décommenter "RELATIVE_URLS = True"
 pelican
 
 vim content/helloword.md
@@ -110,7 +107,7 @@ output
 
 ```shell
 git init
-git remote add origin http://localhost:8080/jnux/blog.git
+git remote add origin http://localhost:8080/jnuxyz/blog.git
 git add .
 git commit -m "Initial commit"
 git push -u origin master
@@ -118,10 +115,10 @@ git push -u origin master
 
 ### Configuration runner
 
->Gitlab > blog > CI / CD Settings > Runners > Specific Runners > Set up a specific Runner manually
+> Gitlab > blog > CI / CD Settings > Runners > Specific Runners > Set up a specific Runner manually
 
 ```shell
-sudo gitlab-runner register
+sudo gitlab-runner register  # shell
 
 vim .gitlab-ci.yml
 ```
@@ -138,49 +135,57 @@ job:
     - git push origin gh-pages
 ```
 
-
-`vim .bash_logout` (tout commenter)
-
-`sudo gitlab-runner run`
-
-## Github
-
-### Sur dépôt **ocr_projet_04_blog**
-
 ```shell
-git checkout -b gh-pages
-echo "<h1>HelloWorld</h1>" > index.html
-git add . 
-git commit -m "gh-pages"  
-git push -u origin gh-pages
+vim .bash_logout` # tout commenter
+source .bash_logout
 ```
 
-> Gitlab > ocr_projet_04_blog > Settings GitHub Pages > Source > Branch:gh-pages
-
 Test :
-  `jnuxyz.github.io/ocr_projet_04_blog`
+  `sudo gitlab-runner run`
+
+## Github
 
 ### SSH
 
 Sur la VM :
 
 ```shell
-ssh-keygen -t ed25519 -C "Vagrant"
+ssh-keygen -t ed25519 -C "Vagrant"  # no passphrase
 vim .ssh/id_ed25519.pub
 ```
 
 > User setting > SSH keys > New SSH Key
 Test : `ssh -T git@github.com`
 
-### Sur VM
-
-A la racine utilisateur :
+### Sur dépôt **ocr_projet_04_blog**
 
 ```shell
 git clone git@github.com:jnuxyz/ocr_projet_04_blog.git
-cd ocr_projet_04_blog/
+cd ocr_projet_04_blog
 git checkout gh-pages
-~/blog/venv/bin/pelican ~/blog/content -o ~/ocr_projet_04_blog -s ~/blog/pelicanconf.py
-git add . && git commit -m "Update" && git push origin gh-pages
 ```
 
+Si branch **gh-pages** inexistante :
+
+  ```shell
+  git checkout -b gh-pages
+  echo "<h1>HelloWorld</h1>" > index.html
+  git add . 
+  git commit -m "gh-pages"  
+  git push -u origin gh-pages
+  ```
+
+  > Gitlab > ocr_projet_04_blog > Settings GitHub Pages > Source > Branch:gh-pages
+
+
+### Utilisation
+
+Dans un autre shell :
+  `sudo gitlab-runner run`
+
+```shell
+# rm -R /home/vagrant/ocr_projet_04_blog/*
+/home/vagrant/blog/venv/bin/pelican /home/vagrant/blog/content -o /home/vagrant/ocr_projet_04_blog -s /home/vagrant/blog/pelicanconf.py
+cd /home/vagrant/blog/
+git add . && git commit -m "Update" && git push origin master
+```
