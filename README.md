@@ -78,25 +78,25 @@ git commit -m "Initial commit"
 git push -u origin master
 ```
 
+Ajouter 3 variables d'environnements au dépôt:
 > Gitlab > pelican > CI / CD Settings > Variables > Add variable
-
-Ajouter 3 variables :
 - NAME_GITHUB  : Nom du profil Github
 - EMAIL_GITHUB : Email du profil Github
 - TOKEN_GITHUB : Token du profil Github
-  > Github > Personal settings > Developer settings > Personal access tokens > Genrate nex token > Select scopes **repo**
+  > Github > Personal settings > Developer settings > Personal access tokens > Genrate nex token > Select scopes > repo
 
 
 ### Configuration runner
 
-> Gitlab > Admin Area > Runners > Set up a shared Runner manually
-ou
-> Gitlab > pelican > CI / CD Settings > Runners > Specific Runners > Set up a specific Runner manually
+> Gitlab > Admin Area > Runners > Set up a shared Runner manually  
+ou  
+> Gitlab > pelican > CI / CD Settings > Runners > Specific Runners > Set up a specific Runner manually  
 
 ```shell
 sudo gitlab-runner register  # Docker
 ```
 
+### Configuration pipeline
 Dans le dossier **pelican** :
 ```shell
 vim .gitlab-ci.yml
@@ -160,4 +160,4 @@ Dans le dossier **pelican** :
 Voir le Job de la pipeline sur Gitlab :
   > Gitlab > pelican > CI / CD > Jobs    
     
-Se rendre sur la page Github [jnuxyz.github.io/ocr_projet_04_blog](https://jnuxyz.github.io/ocr_projet_04_blog/)
+Se rendre sur la page Github : [jnuxyz.github.io/ocr_projet_04_blog](https://jnuxyz.github.io/ocr_projet_04_blog/)
