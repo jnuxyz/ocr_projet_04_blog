@@ -1,0 +1,19 @@
+image: python:rc-slim
+
+before_script:
+  - apt-get update
+  - apt-get -y install git
+  - pip3 install pelican Markdown typogrify
+
+gh_pages:
+  script:
+    - git clone http://$IP_GITLAB/jnuxyz/pelican.git
+    - git clone https://jnuxyz:$TOKEN_GITHUB@github.com/jnuxyz/ocr_projet_04_blog.git --branch=gh-pages gh-pages
+    - git config --global user.email "$EMAIL_GITHUB"
+    - git config --global user.name "$NAME_GITHUB"
+    - rm -rf gh-pages/*
+    - pelican -s pelican/pelicanconf.py -o gh-pages/
+    - cd gh-pages
+    - git add .
+    - git commit -q -m "Update via CI"
+    - git push --force origin gh-pages
