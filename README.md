@@ -5,7 +5,7 @@
 ```shell
 sudo apt-get install -y curl openssh-server ca-certificates tzdata
 sudo apt-get install -y postfix  # Select 'Internet Site'
-sudo EXTERNAL_URL="https://gitlab.example.com" apt-get install gitlab-ce
+sudo EXTERNAL_URL="https://<IP_GITLAB>" apt-get install gitlab-ce
 # Use the default account's username root to login
 ```
 
