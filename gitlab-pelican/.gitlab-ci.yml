@@ -1,18 +1,29 @@
-image: python:rc-slim
+stages:
+  - build
+  - deploy
 
-before_script:
-  - apt-get update
-  - apt-get -y install git
-  - pip3 install pelican Markdown typogrify
-
-gh_pages:
+build-articles:
+  stage: build
   script:
+    - virtualenv -p python3 venv
+    - source venv/bin/activate
+    - pip install pelican Markdown typogrify
     - git clone https://jnuxyz:$TOKEN_GITHUB@github.com/jnuxyz/ocr_projet_04_blog.git --branch=gh-pages gh-pages
     - git config --global user.email "$EMAIL_GITHUB"
     - git config --global user.name "$NAME_GITHUB"
     - rm -rf gh-pages/*
     - pelican -s pelicanconf.py -o gh-pages
+  artifacts:
+    paths:
+      - gh-pages/
+
+deploy-github-pages:
+  stage: deploy
+  script:
     - cd gh-pages
     - git add .
     - git commit -m "Update via CI"
     - git push origin gh-pages
+  dependencies:
+    - build-articles
+  when: manual

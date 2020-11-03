@@ -7,4 +7,4 @@ Summary: Mon premier article avec Pelican.
 
 # HELLOWORD
 
-Un HelloWord pour tester Pelican et Gitlab CI.
+Un HelloWord pour tester Pelican !

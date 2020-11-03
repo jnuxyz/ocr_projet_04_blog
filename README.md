@@ -23,7 +23,9 @@ export GITLAB_RUNNER_DISABLE_SKEL=true; sudo -E apt-get install gitlab-runner
 
 Sur Gitlab créer un dépôt nommé **pelican**.
 
-Sur la VM créer dossier nommé **pelican**.
+```shell
+git clone http://<IP_GITLAB>/jnuxyz/pelican.git
+```
 
 Dans le dossier **pelican** :
 
@@ -36,8 +38,6 @@ Dans le dossier **pelican** :
   ```
 
   ```shell
-  git init
-  git remote add origin http://<IP_GITLAB>/jnuxyz/pelican.git
   git add .
   git commit -m "Initial commit"
   git push -u origin master
@@ -58,7 +58,7 @@ ou
 > Gitlab > pelican > CI / CD Settings > Runners > Specific Runners > Set up a specific Runner manually  
 
 ```shell
-sudo gitlab-runner register  # Docker
+sudo gitlab-runner register  # Shell
 ```
 
 ### Configuration pipeline
@@ -70,24 +70,35 @@ vim .gitlab-ci.yml
 ```
 
 ```yaml
-image: python:rc-slim
+stages:
+  - build
+  - deploy
 
-before_script:
-  - apt-get update
-  - apt-get -y install git
-  - pip3 install pelican Markdown typogrify
-
-gh_pages:
+build-articles:
+  stage: build
   script:
+    - virtualenv -p python3 venv
+    - source venv/bin/activate
+    - pip install pelican Markdown typogrify
     - git clone https://jnuxyz:$TOKEN_GITHUB@github.com/jnuxyz/ocr_projet_04_blog.git --branch=gh-pages gh-pages
     - git config --global user.email "$EMAIL_GITHUB"
     - git config --global user.name "$NAME_GITHUB"
     - rm -rf gh-pages/*
     - pelican -s pelicanconf.py -o gh-pages
+  artifacts:
+    paths:
+      - gh-pages/
+
+deploy-github-pages:
+  stage: deploy
+  script:
     - cd gh-pages
     - git add .
     - git commit -m "Update via CI"
     - git push origin gh-pages
+  dependencies:
+    - build-articles
+  when: manual
 ```
 
 ## Pelican
@@ -113,6 +124,7 @@ pip install pelican Markdown typogrify
 Dans le dossier **pelican** :
 
 ```shell
+source venv/bin/activate
 pelican-quickstart
 vim pelicanconf.py  # Décommenter "RELATIVE_URLS = True" pour Github Pages
 vim content/helloword.md
@@ -138,17 +150,18 @@ pelican --listen -b 0.0.0.0
 
 ## Github
 
-### Sur dépôt **ocr_projet_04_blog**
+### Dépôt **ocr_projet_04_blog**
+
+Récuperer le dépôt :
 
 ```shell
-git clone https://github.com/jnuxyz/ocr_projet_04_blog.git
-cd ocr_projet_04_blog
-git checkout gh-pages
+git clone https://github.com/jnuxyz/ocr_projet_04_blog.git --branch=gh-pages
 ```
 
 Si branch **gh-pages** inexistante :
 
   ```shell
+  git clone https://github.com/jnuxyz/ocr_projet_04_blog.git
   git checkout -b gh-pages
   echo "<h1>HelloWorld</h1>" > index.html
   git add .
@@ -156,9 +169,23 @@ Si branch **gh-pages** inexistante :
   git push -u origin gh-pages
   ```
 
-### Configuration
+### Configuration GitHub Pages
 
   > Github > ocr_projet_04_blog > Settings > GitHub Pages > Source > Branch:gh-pages
+
+## Envoi des Sources
+
+A la racine utilisateur :
+
+```shell
+rm -rf ocr_projet_04_blog/*
+cp -R pelican/output/* ocr_projet_04_blog/
+# pelican -s pelicanconf.py -o ocr_projet_04_blog
+cd ocr_projet_04_blog
+git add .
+git commit -m "Update"
+git push origin gh-pages
+```
 
 ## Utilisation Pipeline
 
