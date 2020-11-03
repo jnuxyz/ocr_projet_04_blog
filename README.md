@@ -1,92 +1,57 @@
 # OCR Projet 04 Pelican
 
-## Installation Gitlab
+## Gitlab
+
+### Installation Gitlab
 
 ```shell
 sudo apt-get install -y curl openssh-server ca-certificates tzdata
 sudo apt-get install -y postfix  # Select 'Internet Site'
+curl -sS https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.deb.sh | sudo bash
 sudo EXTERNAL_URL="http://<IP_GITLAB>" apt-get install gitlab-ce
 # Use the default account's username root to login
 ```
 
-## Installation Gitlab Runner
+### Installation Gitlab Runner
 
 ```shell
 curl -L https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.deb.sh | sudo bash
 export GITLAB_RUNNER_DISABLE_SKEL=true; sudo -E apt-get install gitlab-runner
 ```
 
-## Pelican
+### Configuration dépôt  
 
-### Installation
+Sur Gitlab créer un dépôt nommé **pelican**.
 
-```shell
-sudo apt-get install -y python3-virtualenv python3-dev python3-pip virtualenvwrapper
-echo "export PYTHONDONTWRITEBYTECODE=1" >> ~/.bashrc; source ~/.bashrc
-
-mkdir pelican
-cd pelican
-virtualenv -p python3 venv
-source venv/bin/activate
-
-pip install pelican Markdown typogrify
-```
-
-### Utilisation
+Sur la VM créer dossier nommé **pelican**.
 
 Dans le dossier **pelican** :
-```shell
-pelican-quickstart
-vim pelicanconf.py  # Décommenter "RELATIVE_URLS = True" pour Github Pages
-vim content/helloword.md
-```
-```markdown
-Title: Hello Word
-Date: 2020-10-13 16:00
-Tags: helloword, hello, world
-Category: Blog
-Authors: Jnux
-Summary: Mon premier article avec Pelican.
 
-# HELLOWORD
+  `vim .gitignore`
 
-Un HelloWord pour tester Pelican
-```
+  ```shell
+  venv
+  output
+  *.pyc
+  ```
 
-```shell
-pelican
-pelican --listen -b 0.0.0.0
-```
-
-## Gitlab
-
-### Configuration dépôt
-
-Dans le dossier **pelican** :
-`vim .gitignore `
-```shell
-venv
-output
-*.pyc
-```
-
-```shell
-git init
-git remote add origin http://<IP_GITLAB>/jnuxyz/pelican.git
-git add .
-git commit -m "Initial commit"
-git push -u origin master
-```
+  ```shell
+  git init
+  git remote add origin http://<IP_GITLAB>/jnuxyz/pelican.git
+  git add .
+  git commit -m "Initial commit"
+  git push -u origin master
+  ```
 
 Ajouter 3 variables d'environnements au dépôt:
-> Gitlab > pelican > CI / CD Settings > Variables > Add variable
+  > Gitlab > pelican > CI / CD Settings > Variables > Add variable
+
 - NAME_GITHUB  : Nom du profil Github
 - EMAIL_GITHUB : Email du profil Github
 - TOKEN_GITHUB : Token du profil Github
-  > Github > Personal settings > Developer settings > Personal access tokens > Genrate nex token > Select scopes > repo
+  > Github > Personal settings > Developer settings > Personal access tokens > Genrate new token > Select scopes > repo
 
-
-### Configuration runner
+### Configuration Gitlab Runner
 
 > Gitlab > Admin Area > Runners > Set up a shared Runner manually  
 ou  
@@ -97,10 +62,13 @@ sudo gitlab-runner register  # Docker
 ```
 
 ### Configuration pipeline
+
 Dans le dossier **pelican** :
+
 ```shell
 vim .gitlab-ci.yml
 ```
+
 ```yaml
 image: python:rc-slim
 
@@ -122,6 +90,52 @@ gh_pages:
     - git push origin gh-pages
 ```
 
+## Pelican
+
+### Installation Pelican
+
+```shell
+sudo apt-get install -y python3-virtualenv python3-dev python3-pip virtualenvwrapper
+echo "export PYTHONDONTWRITEBYTECODE=1" >> ~/.bashrc; source ~/.bashrc
+```
+
+Dans le dossier **pelican** :
+
+```shell
+virtualenv -p python3 venv
+source venv/bin/activate
+
+pip install pelican Markdown typogrify
+```
+
+### Utilisation Pelican
+
+Dans le dossier **pelican** :
+
+```shell
+pelican-quickstart
+vim pelicanconf.py  # Décommenter "RELATIVE_URLS = True" pour Github Pages
+vim content/helloword.md
+```
+
+```markdown
+Title: Hello Word
+Date: 2020-10-13 16:00
+Tags: helloword, hello, world
+Category: Blog
+Authors: Jnux
+Summary: Mon premier article avec Pelican.
+
+# HELLOWORD
+
+Un HelloWord pour tester Pelican
+```
+
+```shell
+pelican
+pelican --listen -b 0.0.0.0
+```
+
 ## Github
 
 ### Sur dépôt **ocr_projet_04_blog**
@@ -137,27 +151,29 @@ Si branch **gh-pages** inexistante :
   ```shell
   git checkout -b gh-pages
   echo "<h1>HelloWorld</h1>" > index.html
-  git add . 
+  git add .
   git commit -m "gh-pages"  
   git push -u origin gh-pages
   ```
 
-### Configuration 
+### Configuration
+
   > Github > ocr_projet_04_blog > Settings > GitHub Pages > Source > Branch:gh-pages
 
-
-# Utilisation
+## Utilisation Pipeline
 
 Dans le dossier **pelican** :
-  - Modifier ou ajouter des articles et des pages dans le sous-dossier *content*.
-  - Envoyer les modifications sur Gitlab :
-    ```shell
-    git add .
-    git commit -m "Update"
-    git push origin master
-    ```
+
+- Modifier ou ajouter des articles et des pages dans le sous-dossier *content*.
+- Envoyer les modifications sur Gitlab :
+
+  ```shell
+  git add .
+  git commit -m "Update"
+  git push origin master
+  ```
 
 Voir le Job de la pipeline sur Gitlab :
-  > Gitlab > pelican > CI / CD > Jobs    
-    
+  > Gitlab > pelican > CI / CD > Jobs
+
 Se rendre sur la page Github : [jnuxyz.github.io/ocr_projet_04_blog](https://jnuxyz.github.io/ocr_projet_04_blog/)
