@@ -110,10 +110,7 @@ echo "export PYTHONDONTWRITEBYTECODE=1" >> ~/.bashrc; source ~/.bashrc
 Dans le dossier **pelican** :
 
 ```shell
-virtualenv -p python3 venv
-source venv/bin/activate
-
-pip install pelican Markdown typogrify
+pip install pelican Markdown typogrify # sudo
 ```
 
 ### Utilisation Pelican
@@ -121,7 +118,6 @@ pip install pelican Markdown typogrify
 Dans le dossier **pelican** :
 
 ```shell
-source venv/bin/activate
 pelican-quickstart
 vim pelicanconf.py  # Décommenter "RELATIVE_URLS = True" pour Github Pages
 vim content/helloword.md
