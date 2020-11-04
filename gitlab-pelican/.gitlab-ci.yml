@@ -5,14 +5,11 @@ stages:
 build-articles:
   stage: build
   script:
-    - virtualenv -p python3 venv
-    - source venv/bin/activate
-    - pip install pelican Markdown typogrify
     - git clone https://jnuxyz:$TOKEN_GITHUB@github.com/jnuxyz/ocr_projet_04_blog.git --branch=gh-pages gh-pages
     - git config --global user.email "$EMAIL_GITHUB"
     - git config --global user.name "$NAME_GITHUB"
     - rm -rf gh-pages/*
-    - pelican -s pelicanconf.py -o gh-pages
+    - python3 -m pelican -s pelicanconf.py -o gh-pages
   artifacts:
     paths:
       - gh-pages/
