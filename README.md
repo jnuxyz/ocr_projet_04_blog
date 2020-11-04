@@ -44,7 +44,7 @@ Dans le dossier **pelican** :
   ```
 
 Ajouter 3 variables d'environnements au dépôt:
-  > Gitlab > pelican > CI / CD Settings > Variables > Add variable
+  > Gitlab > pelican > Settings > CI / CD Settings > Variables > Add variable
 
 - NAME_GITHUB  : Nom du profil Github
 - EMAIL_GITHUB : Email du profil Github
@@ -52,10 +52,8 @@ Ajouter 3 variables d'environnements au dépôt:
   > Github > Personal settings > Developer settings > Personal access tokens > Genrate new token > Select scopes > repo
 
 ### Configuration Gitlab Runner
-
-> Gitlab > Admin Area > Runners > Set up a shared Runner manually  
-ou  
-> Gitlab > pelican > CI / CD Settings > Runners > Specific Runners > Set up a specific Runner manually  
+  
+> Gitlab > pelican > Settings > CI / CD Settings > Runners > Specific Runners > Set up a specific Runner manually  
 
 ```shell
 sudo gitlab-runner register  # Shell
@@ -77,11 +75,14 @@ stages:
 build-articles:
   stage: build
   script:
+    - virtualenv -p python3 venv
+    - source venv/bin/activate
+    - pip install pelican Markdown
     - git clone https://jnuxyz:$TOKEN_GITHUB@github.com/jnuxyz/ocr_projet_04_blog.git --branch=gh-pages gh-pages
     - git config --global user.email "$EMAIL_GITHUB"
     - git config --global user.name "$NAME_GITHUB"
     - rm -rf gh-pages/*
-    - python3 -m pelican -s pelicanconf.py -o gh-pages
+    - pelican -s pelicanconf.py -o gh-pages
   artifacts:
     paths:
       - gh-pages/
@@ -104,13 +105,15 @@ deploy-github-pages:
 
 ```shell
 sudo apt-get install -y python3-virtualenv python3-dev python3-pip virtualenvwrapper
-echo "export PYTHONDONTWRITEBYTECODE=1" >> ~/.bashrc; source ~/.bashrc
+# echo "export PYTHONDONTWRITEBYTECODE=1" >> ~/.bashrc; source ~/.bashrc
 ```
 
 Dans le dossier **pelican** :
 
 ```shell
-pip install pelican Markdown typogrify # sudo
+virtualenv -p python3 venv
+source venv/bin/activate
+pip install pelican Markdown
 ```
 
 ### Utilisation Pelican
@@ -166,7 +169,7 @@ Si branch **gh-pages** inexistante :
 
   > Github > ocr_projet_04_blog > Settings > GitHub Pages > Source > Branch:gh-pages
 
-## Envoi des Sources
+### Envoi des Sources
 
 A la racine utilisateur :
 
