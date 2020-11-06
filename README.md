@@ -21,13 +21,13 @@ export GITLAB_RUNNER_DISABLE_SKEL=true; sudo -E apt-get install gitlab-runner
 
 ### Configuration dépôt  
 
-Sur Gitlab créer un dépôt nommé **pelican**.
+Sur Gitlab créer un dépôt nommé **blog**.
 
 ```shell
-git clone http://<IP_GITLAB>/jnuxyz/pelican.git
+git clone http://<IP_GITLAB>/jnuxyz/blog.git
 ```
 
-Dans le dossier **pelican** :
+Dans le dossier **blog** :
 
   `vim .gitignore`
 
@@ -44,7 +44,7 @@ Dans le dossier **pelican** :
   ```
 
 Ajouter 3 variables d'environnements au dépôt:
-  > Gitlab > pelican > Settings > CI / CD Settings > Variables > Add variable
+  > Gitlab > blog > Settings > CI / CD Settings > Variables > Add variable
 
 - NAME_GITHUB  : Nom du profil Github
 - EMAIL_GITHUB : Email du profil Github
@@ -53,7 +53,7 @@ Ajouter 3 variables d'environnements au dépôt:
 
 ### Configuration Gitlab Runner
   
-> Gitlab > pelican > Settings > CI / CD Settings > Runners > Specific Runners > Set up a specific Runner manually  
+> Gitlab > blog > Settings > CI / CD Settings > Runners > Specific Runners > Set up a specific Runner manually  
 
 ```shell
 sudo gitlab-runner register  # Shell
@@ -61,7 +61,7 @@ sudo gitlab-runner register  # Shell
 
 ### Configuration pipeline
 
-Dans le dossier **pelican** :
+Dans le dossier **blog** :
 
 ```shell
 vim .gitlab-ci.yml
@@ -108,7 +108,7 @@ sudo apt-get install -y python3-virtualenv python3-dev python3-pip virtualenvwra
 # echo "export PYTHONDONTWRITEBYTECODE=1" >> ~/.bashrc; source ~/.bashrc
 ```
 
-Dans le dossier **pelican** :
+Dans le dossier **blog** :
 
 ```shell
 virtualenv -p python3 venv
@@ -118,7 +118,7 @@ pip install pelican Markdown
 
 ### Utilisation Pelican
 
-Dans le dossier **pelican** :
+Dans le dossier **blog** :
 
 ```shell
 pelican-quickstart
@@ -175,7 +175,7 @@ A la racine utilisateur :
 
 ```shell
 rm -rf ocr_projet_04_blog/*
-cp -R pelican/output/* ocr_projet_04_blog/
+cp -R blog/output/* ocr_projet_04_blog/
 # pelican -s pelicanconf.py -o ocr_projet_04_blog
 cd ocr_projet_04_blog
 git add .
@@ -185,7 +185,7 @@ git push origin gh-pages
 
 ## Utilisation Pipeline
 
-Dans le dossier **pelican** :
+Dans le dossier **blog** :
 
 - Modifier ou ajouter des articles et des pages dans le sous-dossier *content*.
 - Envoyer les modifications sur Gitlab :
@@ -197,6 +197,6 @@ Dans le dossier **pelican** :
   ```
 
 Voir le Job de la pipeline sur Gitlab :
-  > Gitlab > pelican > CI / CD > Jobs
+  > Gitlab > blog > CI / CD > Jobs
 
 Se rendre sur la page Github : [jnuxyz.github.io/ocr_projet_04_blog](https://jnuxyz.github.io/ocr_projet_04_blog/)
