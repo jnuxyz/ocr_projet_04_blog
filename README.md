@@ -1,4 +1,4 @@
-# OCR Projet 04 Pelican
+# OCR Projet 04 Blog
 
 ## Gitlab
 
