@@ -1,1 +1,1 @@
-# Copie du dêpot Pelican du Gitlab sur la VM
+# Copie du dêpot Blog du Gitlab sur la VM
